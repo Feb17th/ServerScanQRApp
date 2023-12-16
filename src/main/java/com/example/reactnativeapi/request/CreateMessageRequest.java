@@ -1,18 +1,17 @@
-package com.example.reactnativeapi.entity;
+package com.example.reactnativeapi.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Builder
 @AllArgsConstructor
-public class MessageEntity {
-    private Integer id;
+@NoArgsConstructor
+public class CreateMessageRequest {
     private String message;
     private String location;
     private LocalDateTime lastUpdate;

@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final AuthenticationProvider authenticationProvider;
     private final MyAccessDeniedHandler myAccessDeniedHandler;
 
     @Bean
@@ -34,12 +33,25 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers("/api/v1/**").permitAll()
+                                .requestMatchers(
+//                                "/api/**",
+                                        "/v2/api-docs",
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/**",
+                                        "/swagger-resources",
+                                        "/swagger-resources/**",
+                                        "/configuration/ui",
+                                        "/configuration/security",
+                                        "/swagger-ui/**",
+                                        "/webjars/**",
+                                        "/swagger-ui.html",
+                                        "/swagger-ui-custom.html"
+                                ).permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
                 .exceptionHandling(exception -> exception.accessDeniedHandler(myAccessDeniedHandler))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return httpSecurity.build();
     }
