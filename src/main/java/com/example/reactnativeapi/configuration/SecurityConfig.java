@@ -1,5 +1,6 @@
 package com.example.reactnativeapi.configuration;
 
+import com.example.reactnativeapi.service.LogoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,6 +26,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
+    private final AuthenticationProvider authenticationProvider;
+
+    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final LogoutService logoutService;
     private final MyAccessDeniedHandler myAccessDeniedHandler;
 
     @Bean
@@ -32,7 +39,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/api/v1/**").permitAll()
+                                .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/message/**").permitAll()
+                                .requestMatchers("/api/v1/location/**").hasAnyAuthority("Admin","Customer")
                                 .requestMatchers(
 //                                "/api/**",
                                         "/v2/api-docs",
@@ -51,7 +60,13 @@ public class SecurityConfig {
                                 .authenticated()
                 )
                 .exceptionHandling(exception -> exception.accessDeniedHandler(myAccessDeniedHandler))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout((logout) -> logout
+                        .logoutUrl("/api/v1/auth/logout")
+                        .addLogoutHandler(logoutService)
+                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
 
         return httpSecurity.build();
     }
