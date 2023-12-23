@@ -41,7 +41,7 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/api/v1/message/**").permitAll()
-                                .requestMatchers("/api/v1/location/**").hasAnyAuthority("Admin","Customer")
+                                .requestMatchers("/api/v1/location/**").permitAll()
                                 .requestMatchers(
 //                                "/api/**",
                                         "/v2/api-docs",
