@@ -7,6 +7,7 @@ import com.example.reactnativeapi.response.MessageResponse;
 import com.example.reactnativeapi.service.LocationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,10 @@ public class LocationController {
     @Operation(summary = "Get One Location By Id")
     @GetMapping("/{id}")
     public ResponseEntity<LocationResponse> getLocation(
+            HttpServletRequest request,
             @PathVariable String id
     ) {
-        return ResponseEntity.ok(locationService.getLocation(id));
+        return ResponseEntity.ok(locationService.getLocation(request, id));
     }
 
     @Operation(summary = "Add One Location")

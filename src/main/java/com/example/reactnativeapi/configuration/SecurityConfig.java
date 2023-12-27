@@ -42,6 +42,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/api/v1/message/**").permitAll()
                                 .requestMatchers("/api/v1/location/**").permitAll()
+                                .requestMatchers("/api/v1/common/**").hasAnyAuthority("Admin", "Customer")
+                                .requestMatchers("/api/v1/history/**").hasAnyAuthority("Admin", "Customer")
                                 .requestMatchers(
 //                                "/api/**",
                                         "/v2/api-docs",

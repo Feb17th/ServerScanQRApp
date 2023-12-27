@@ -38,6 +38,7 @@ public class AuthenticationService {
     private final TokenCategoryRepository tokenCategoryRepository;
     private final TokenTypeRepository tokenTypeRepository;
     private final AuthenticationManager authenticationManager;
+    private final UserInfoRepository userInfoRepository;
 
     public MessageResponse register(UserCreateRequest userCreateRequest){
         if(userCreateRequest.getUserName().equals("") || userCreateRequest.getPassword().equals("")) {
@@ -60,6 +61,14 @@ public class AuthenticationService {
         var savedUser = userRepository.save(user);
 
         userRoleRepository.save(new UserRoleEntity(savedUser.getId(), checkRole(userCreateRequest.getRole())));
+
+        userInfoRepository.save(new UserInfoEntity(
+                savedUser.getId(),
+                null,
+                null,
+                null,
+                null
+        ));
 
         return new MessageResponse("Register successfully!");
     }
