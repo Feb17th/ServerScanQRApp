@@ -11,7 +11,6 @@ import com.example.reactnativeapi.response.AuthenticationResponse;
 import com.example.reactnativeapi.response.MessageResponse;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,8 +39,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserInfoRepository userInfoRepository;
 
-    public MessageResponse register(UserCreateRequest userCreateRequest){
-        if(userCreateRequest.getUserName().equals("") || userCreateRequest.getPassword().equals("")) {
+    public MessageResponse register(UserCreateRequest userCreateRequest) {
+        if (userCreateRequest.getUserName().equals("") || userCreateRequest.getPassword().equals("")) {
             throw new BadRequestException("Email or Password must not be empty.");
         }
 
@@ -49,7 +48,7 @@ public class AuthenticationService {
         if (userCheck != null)
             throw new ConflictException("User name or email already exists");
 
-        if(checkRole(userCreateRequest.getRole()) == null) {
+        if (checkRole(userCreateRequest.getRole()) == null) {
             throw new NotFoundException("Role doesn't exist in System!");
         }
 
@@ -75,7 +74,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         UsersEntity user = userRepository.findByUsername(request.getUserName());
-        if(user == null) {
+        if (user == null) {
             throw new NotFoundException("Not found user name or email");
         }
         authenticationManager.authenticate(
@@ -111,7 +110,7 @@ public class AuthenticationService {
 
         if (userName != null) {
             UsersEntity user = userRepository.findByUsername(userName);
-            if(user == null) {
+            if (user == null) {
                 throw new NotFoundException("Can't not found User");
             }
             tokenRepository.findByTokenAndAndTokenCategoryIdAndExpiredFalseAndRevokedFalse(refreshToken, tokenCategoryRepository.findCategoryByTokenCategoryName("REFRESH").getId())
@@ -130,6 +129,7 @@ public class AuthenticationService {
         }
         throw new MalformedJwtException("token invalid");
     }
+
 
     public void saveUserToken(UsersEntity user, String jwtToken, String tokenCategory) {
         var token = TokenEntity.builder()

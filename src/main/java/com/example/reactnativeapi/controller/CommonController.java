@@ -1,5 +1,6 @@
 package com.example.reactnativeapi.controller;
 
+import com.example.reactnativeapi.request.ChangePasswordRequest;
 import com.example.reactnativeapi.request.UpdateUserInfoRequest;
 import com.example.reactnativeapi.response.MessageResponse;
 import com.example.reactnativeapi.response.UserInfoResponse;
@@ -36,5 +37,14 @@ public class CommonController {
             @RequestBody UpdateUserInfoRequest updateUserInfoRequest
     ) {
         return ResponseEntity.ok(commonService.updateUserInfo(request, updateUserInfoRequest));
+    }
+
+    @Operation(summary = "Change password")
+    @PutMapping("/password")
+    public ResponseEntity<MessageResponse> changePassword(
+            HttpServletRequest request,
+            @RequestBody ChangePasswordRequest changePasswordRequest
+            ){
+        return ResponseEntity.ok(commonService.changePasswordResponse(request, changePasswordRequest));
     }
 }
