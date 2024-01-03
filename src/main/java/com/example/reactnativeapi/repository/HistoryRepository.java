@@ -15,8 +15,8 @@ public interface HistoryRepository extends JpaRepository<HistoryEntity, Integer>
     @Query(value = "SELECT * FROM history where user_id = ? and is_saving = true", nativeQuery = true)
     List<HistoryEntity> findAllStarLocation(UUID userId);
 
-    @Query(value = "SELECT count(id) FROM history where user_id = ? and location_id = ?", nativeQuery = true)
-    Integer checkExisting(UUID userId, UUID locationId);
+    @Query(value = "SELECT * FROM history where user_id = ? and location_id = ?", nativeQuery = true)
+    HistoryEntity checkExisting(UUID userId, UUID locationId);
 
     @Query(value = "SELECT * FROM history where id = ?", nativeQuery = true)
     HistoryEntity findOneById(int id);

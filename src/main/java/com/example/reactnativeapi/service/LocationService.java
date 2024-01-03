@@ -37,7 +37,8 @@ public class LocationService {
 
             UUID userId = encodedJwtResponse.getUserId();
 
-            if(historyRepository.checkExisting(userId, locationId) == 0) {
+            HistoryEntity historyEntity = historyRepository.checkExisting(userId, locationId);
+            if(historyEntity == null) {
                 historyRepository.save(new HistoryEntity(
                         userId,
                         locationId,
@@ -45,6 +46,13 @@ public class LocationService {
                         false,
                         LocalDateTime.now()
                 ));
+            } else {
+                historyEntity.setTimeScan(LocalDateTime.now());
+                if(historyEntity.getIsDeleted()) {
+                    historyEntity.setIsDeleted(false);
+                }
+
+                historyRepository.save(historyEntity);
             }
         }
 

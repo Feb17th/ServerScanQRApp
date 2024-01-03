@@ -41,7 +41,7 @@ public class HistoryController {
         return ResponseEntity.ok(historyService.deleteHistory(request, id));
     }
 
-    @Operation(summary = "Save this Location")
+    @Operation(summary = "Star or Delete Star this Location")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Put Id of History to save this Location")
     })

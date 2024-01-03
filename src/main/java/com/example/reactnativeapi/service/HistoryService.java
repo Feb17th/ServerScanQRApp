@@ -65,11 +65,15 @@ public class HistoryService {
         if(historyEntity == null) {
             throw new NotFoundException("You haven't scanned this QR Code.");
         }
-        historyEntity.setIsSaving(true);
+        historyEntity.setIsSaving(!historyEntity.getIsSaving());
 
         historyRepository.save(historyEntity);
 
-        return new MessageResponse("Star Successfully!");
+        if(historyEntity.getIsSaving()) {
+            return new MessageResponse("Star Successfully!");
+        } else {
+            return new MessageResponse("Delete Star Successfully!");
+        }
     }
 
     public ListResponse getAllStarLocation(HttpServletRequest request) {
